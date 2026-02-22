@@ -7,6 +7,10 @@ project(cxform
 
 option(BUILD_TESTS "Build cxform test" OFF)
 
+option(BUILD_CLI "Build the cli application" OFF)
+
+option(BUILD_EXAMPLE "Build the example program" OFF)
+
 add_library(cxform
   src/cxform-auto.c
   src/cxform-manual.c
@@ -53,11 +57,24 @@ if(BUILD_TESTS)
   add_subdirectory(tests)
 endif()
 
-add_executable(cx
-  src/main.c
-)
+if(BUILD_EXAMPLE)
+  add_executable(cxform_example
+    src/main.c
+  )
 
-target_link_libraries(cx
-  PUBLIC
-    cxform
-)
+  target_link_libraries(cxform_example
+    PRIVATE
+      cxform
+  )
+endif()
+
+if(BUILD_CLI)
+  add_executable(cxform_cli
+    src/main-cli.c
+  )
+
+  target_link_libraries(cxform_cli
+    PRIVATE
+      cxform
+  )
+endif()
