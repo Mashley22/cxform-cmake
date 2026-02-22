@@ -1,36 +1,45 @@
-# cxform
-CXFORM: Coordinate transformation package for IDL and C with updated IGRF 12 coefficients 
+# cxform-cmake
+CXFORM CMAKE: Fork of the nasa cxform software, provided with cmake and some 
+improved and fixed functionality
 
 # original source
-https://spdf.sci.gsfc.nasa.gov/pub/software/old/selected_software_from_nssdc/coordinate_transform/
+https://spdf.gsfc.nasa.gov/pub/software/old/coordinate_transform/
+see the readme.txt for the original readme
 
-# compile the sample main-cli to use cxform from the command line interface
-## firstly, compile the cxform shared library
-```bash
-conqueror@dev01:~/cxform$ make so-c
-OS type detected: Linux
-make[1]: Entering directory '/home/conqueror/cxform'
-cc -fPIC -shared   -c -o cxform-auto.o cxform-auto.c
-cc -fPIC -shared   -c -o cxform-manual.o cxform-manual.c
-ld -G -lm -o cxform-c.so cxform-auto.o cxform-manual.o
-make[1]: Leaving directory '/home/conqueror/cxform'
-```
+# forked from
+https://github.com/bsd-conqueror/cxform
 
-## only after that compile the main-cli
-```bash
-conqueror@dev01:~/cxform$ make main-cli
-ld -G -lm -o cxform-c.so cxform-auto.o cxform-manual.o
-cc    -c -o main-cli.o main-cli.c
-gcc ./cxform-c.so main-cli.o -lm -o main-cli
-```
-## usage (date time values must be provided without a leading zero)
-```bash
-conqueror@dev01:~/cxform$ ./main-cli 2017 04 19 1 48 0 11.111111 22.222222 33.333333
-Time: 2017/04/19 01:48:00  (JD 2457862.575000, ES: 545838480)
+# overview
+Provides coordinate transforms for various astronomical coordinate systems, 
+updated up to IGRF 12. Two options are provided for the interaction, either via
+the c api, or via a cli application (see usage cli app). The api has been 
+extended with a cxform2 function which allows the coordinate systems to be 
+selected via enums instead of strings. 
 
-Input Vector (J2000):   11.111111 22.222222 33.333333
-Output Vector (GEO):  -24.551739  -3.967237 33.314684
-Output Vector (GSE):  26.106872 23.989126 21.710553
-Output Vector (GSM):  26.106872 11.185162 30.359816
-Output Vector (SM): 23.742015 11.185162 32.242889
-```
+# usage
+## cli app
+Build with cmake as usual, simply add the BUILD_CLI opt. (something like cmake 
+-DBUILD_CLI=on and then build with your chosen generator)
+The cli takes nine arguements. The first size are unsigned integers 
+representing the time. Year, month, day, hour, minute, seconds. The next three
+are doubles representing the input coordinates. At the moment its kinda useless,
+providing the result of the input (taken as from the J2000 coordinate system)
+to GEO, GSE, GSM, SM.
+
+## c api
+Add as a subdirectory and add link against the cxform library. The two 
+important functions are cxform and cxform2. Both take an two systems and
+coordinates, one for the input and output, and a time as ephemeris seconds past
+J2000. A converter function is provided in date2es. cxform takes the systems
+as string, whereas cxfrom2 takes them as enum values.
+
+## samples and tests
+The original source provides a main.c file which has been provided as an
+example with the option BUILD_EXAMPLE.
+Likewise the tester file can be built with BUILD_TEST, see build/test.
+A copy of the output tests results I found are in the tests directory.
+
+# compatibility
+I am currently running on Linux kernel 6.19. I've tested with both clang
+(ver 21.1.8) and gcc (ver 15.2.1). It should work out of the box with msvc,
+but no promises. I'm also not exactly sure which minimum c standard this needs.
