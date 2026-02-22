@@ -5,6 +5,8 @@ project(cxform
   LANGUAGES C
 )
 
+option(BUILD_TESTS "Build cxform test" OFF)
+
 add_library(cxform
   src/cxform-auto.c
   src/cxform-manual.c
@@ -17,6 +19,10 @@ target_include_directories(cxform
 
 if(UNIX)
   target_link_libraries(cxform PRIVATE m)
+endif()
+
+if(BUILD_TESTS)
+  add_subdirectory(tests)
 endif()
 
 add_executable(cx

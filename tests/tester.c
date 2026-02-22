@@ -35,7 +35,7 @@ int main()
 {
 	/* Misc variables */
 	int retVal, i, j, srcSystemIndex;
-	char srcSystem[3];
+	char srcSystem[4];
 	double jd;
 	Vec v_in, v_out;
 	FILE *filePtr, *filePtrOut;
