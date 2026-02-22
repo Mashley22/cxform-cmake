@@ -2,6 +2,11 @@ add_executable(cxform_test
   tester.c
 )
 
+target_compile_options(cxform
+  PUBLIC
+    ${PEDANTIC_COMPILE_OPTS}
+)
+
 target_link_libraries(cxform_test
   PRIVATE
     cxform

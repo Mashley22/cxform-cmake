@@ -21,6 +21,34 @@ if(UNIX)
   target_link_libraries(cxform PRIVATE m)
 endif()
 
+set(PEDANTIC_COMPILE_OPTS "")
+
+if(MSVC)
+  list(APPEND PEDANTIC_COMPILE_OPTS
+    /W4
+    /WX
+    /permissive-
+    /w14242
+    /w14254
+    /w14287
+    /w14296
+  )
+else()
+  list(APPEND PEDANTIC_COMPILER_OPTS
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Werror
+    -Wshadow
+    -Wconversion
+    -Wsign-conversion
+    -Wcast-align
+    -Wdouble-promotion
+    -Wformat=2
+    -Wundef
+  )
+endif()
+
 if(BUILD_TESTS)
   add_subdirectory(tests)
 endif()
